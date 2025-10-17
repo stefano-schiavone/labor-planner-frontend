@@ -1,0 +1,141 @@
+/* Sidebar container */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 16rem; /* expanded width */
+  background-color: #1f2937; /* gray-800 */
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  transition: width 0.3s ease-in-out;
+  overflow: hidden;
+  z-index: auto;
+}
+
+.sidebar.collapsed {
+  width: 5rem; /* collapsed width */
+}
+
+/* Sidebar header */
+.sidebar .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #374151; /* gray-700 */
+}
+
+.sidebar .header img {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.25rem;
+  object-fit: cover;
+}
+
+.sidebar .header span {
+  font-weight: bold;
+  font-size: 1.25rem;
+  margin-left: 0.5rem;
+}
+
+/* Navigation */
+.sidebar nav {
+  flex: 1;
+  margin-top: 1.5rem;
+  padding: 0 1rem;
+  overflow-y: auto;
+}
+
+.sidebar nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar nav ul li {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar nav ul li button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.sidebar nav ul li button:hover {
+  background-color: #374151; /* gray-700 */
+}
+
+.sidebar nav ul li button.active {
+  background-color: #2563eb; /* blue-600 */
+}
+
+/* Submenu */
+.sidebar nav ul li ul {
+  margin-top: 0.5rem;
+  margin-left: 2rem;
+}
+
+.sidebar nav ul li ul li button {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+/* Footer */
+.sidebar .footer {
+  border-top: 1px solid #374151;
+  padding: 1rem;
+}
+
+.sidebar .footer img {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-left: 0.3rem;
+}
+
+.sidebar .footer div {
+  display: inline-block;
+  margin-left: 0.3rem;
+}
+
+.sidebar .footer p:first-child {
+  font-weight: 500;
+}
+
+.sidebar .footer p:last-child {
+  font-size: 0.875rem;
+  color: #9ca3af; /* gray-400 */
+}
+
+.sidebar .footer button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sidebar .footer button:hover {
+  background-color: #374151;
+}

@@ -1,0 +1,4 @@
+.main-content {
+  padding: 2rem;
+  transition: margin-left 0.3s ease-in-out;
+}

@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: hsl(210, 100%, 95%);
+  --color-brand-100: hsl(210, 100%, 92%);
+  --color-brand-200: hsl(210, 100%, 80%);
+  --color-brand-300: hsl(210, 100%, 65%);
+  --color-brand-400: hsl(210, 98%, 48%);
+  --color-brand-500: hsl(210, 98%, 42%);
+  --color-brand-600: hsl(210, 98%, 55%);
+  --color-brand-700: hsl(210, 100%, 35%);
+  --color-brand-800: hsl(210, 100%, 16%);
+  --color-brand-900: hsl(210, 100%, 21%);
+
+  --color-gray-50: hsl(220, 35%, 97%);
+  --color-gray-100: hsl(220, 30%, 94%);
+  --color-gray-200: hsl(220, 20%, 88%);
+  --color-gray-300: hsl(220, 20%, 80%);
+  --color-gray-400: hsl(220, 20%, 65%);
+  --color-gray-500: hsl(220, 20%, 42%);
+  --color-gray-600: hsl(220, 20%, 35%);
+  --color-gray-700: hsl(220, 20%, 25%);
+  --color-gray-800: hsl(220, 30%, 6%);
+  --color-gray-900: hsl(220, 35%, 3%);
+}
