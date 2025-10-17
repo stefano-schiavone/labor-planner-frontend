@@ -21,7 +21,7 @@ export const LogInCard: React.FC<LogInCardProps> = ({ onSubmit }) => {
     <div
       className="
       max-w-sm mx-auto p-8 rounded-lg 
-      bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-900)] 
+      bg-[var(--color-gray-50)] dark:bg-[rgba(5,7,10,0.4)] 
       border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] 
       shadow-md shadow-[hsla(220,30%,5%,0.07)] dark:shadow-[hsla(220,30%,5%,0.7)]
       "
@@ -77,7 +77,7 @@ export const LogInCard: React.FC<LogInCardProps> = ({ onSubmit }) => {
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="text-xs font-medium text-[var(--color-brand-500)] hover:underline"
+              className="text-xs font-medium text-white hover:underline"
             >
               Forgot your password?
             </button>
@@ -124,7 +124,7 @@ export const LogInCard: React.FC<LogInCardProps> = ({ onSubmit }) => {
             h-10 rounded-md border border-[var(--color-gray-700)]
             bg-gradient-to-b from-[var(--color-gray-700)] to-[var(--color-gray-800)]
             dark:from-[var(--color-gray-50)] dark:to-[var(--color-gray-100)]
-            text-white dark:text-white text-sm font-medium
+            dark:!text-black text-white text-sm font-medium
             shadow-inner
             hover:from-[var(--color-gray-600)] hover:to-[var(--color-gray-700)]
             dark:hover:from-[var(--color-gray-200)] dark:hover:to-[var(--color-gray-50)]
@@ -137,13 +137,13 @@ export const LogInCard: React.FC<LogInCardProps> = ({ onSubmit }) => {
         </button>
 
         {/* Sign Up Link */}
-        <p className="text-center text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-300)]">
+        <p className="text-center text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-100)]">
           Don’t have an account?{" "}
           <a
             href="#"
             className="
               relative font-medium text-[var(--color-brand-500)]
-              w-fit dark:text-white
+              w-fit dark:!text-white
               before:content-[''] before:absolute before:left-0 before:bottom-0 before:h-[1px]
               before:w-full before:bg-[var(--color-gray-500)] before:opacity-30 before:transition-all
               hover:before:w-0
