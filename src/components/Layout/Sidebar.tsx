@@ -1,5 +1,7 @@
 import React from "react";
 import type { IconType } from "react-icons";
+import { NavLink } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router";
 import {
   IoMdMenu,
   IoMdHome,
@@ -9,6 +11,11 @@ import {
   IoMdPie,
   IoMdPeople,
   IoMdArrowDropdown,
+  IoIosBuild,
+  IoIosCalendar,
+  IoIosCreate,
+  IoIosClock,
+  IoIosTime
 } from "react-icons/io";
 
 interface SubmenuItem {
@@ -36,21 +43,19 @@ const getInitials = (name: string) => {
 };
 
 const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
+
+   const navigate = useNavigate();
+   const location = useLocation();
+
   const [activeItem, setActiveItem] = React.useState("Dashboard");
   const [expandedSubmenus, setExpandedSubmenus] = React.useState<string[]>([]);
 
   const menuItems: MenuItem[] = [
-    { name: "Dashboard", icon: IoMdHome },
-    {
-      name: "Analytics",
-      icon: IoMdPie,
-      submenu: [
-        { name: "Reports", path: "/reports" },
-        { name: "Statistics", path: "/statistics" },
-        { name: "Performance", path: "/performance" },
-      ],
-    },
-    { name: "Users", icon: IoMdPeople },
+    { name: "Active", icon: IoIosCalendar, path: "/active" },
+    { name: "Scheduling", icon: IoIosCreate, path: "/scheduling" },
+    { name: "Upcoming", icon: IoIosTime, path: "/upcoming" },
+    { name: "Manage Machines", icon: IoIosBuild, path: "/machines" },
+    { name: "Manage Users", icon: IoMdPeople, path: "/users" },
     {
       name: "Settings",
       icon: IoMdSettings,
@@ -60,7 +65,16 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { name: "Preferences", path: "/preferences" },
       ],
     },
-    { name: "Help & Support", icon: IoMdHelpCircle },
+    {
+       name: "Analytics",
+       icon: IoMdPie,
+       submenu: [
+          { name: "Reports", path: "/reports" },
+          { name: "Statistics", path: "/statistics" },
+          { name: "Performance", path: "/performance" },
+       ],
+    },
+    { name: "Support", icon: IoMdHelpCircle, path: "/support" },
   ];
 
   const toggleSubmenu = (itemName: string) =>
@@ -95,16 +109,14 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         <ul className="space-y-2">
           {menuItems.map((item) => (
             <li key={item.name} className="flex flex-col">
-              <button
-                onClick={() => {
-                  setActiveItem(item.name);
-                  if (item.submenu) toggleSubmenu(item.name);
-                }}
-                className={`flex items-center w-full rounded-lg transition-colors duration-200 
-                  ${activeItem === item.name ? "bg-blue-600" : "hover:bg-gray-700"} 
-                  ${collapsed ? "justify-center p-3" : "justify-start p-3"}`}
-                aria-current={activeItem === item.name ? "page" : undefined}
-              >
+              <NavLink
+  onClick={() => item.submenu && toggleSubmenu(item.name)}
+  to={item.path ?? "#"}
+  className={`flex items-center w-full rounded-lg transition-colors duration-200 
+    ${location.pathname === item.path ? "bg-blue-600" : "hover:bg-gray-700"} 
+    ${collapsed ? "justify-center p-3" : "justify-start p-3"}`}
+  aria-current={location.pathname === item.path ? "page" : undefined}
+>
                 <item.icon size={20} />
                 {!collapsed && <span className="ml-4 flex-1">{item.name}</span>}
                 {item.submenu && !collapsed && (
@@ -114,7 +126,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                     }`}
                   />
                 )}
-              </button>
+              </NavLink>
 
               {/* Submenu */}
               {item.submenu &&
@@ -123,7 +135,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                   <ul className="ml-6 mt-2 space-y-2">
                     {item.submenu.map((sub) => (
                       <li key={sub.name}>
-                        <button
+                        <NavLink
                           onClick={() => setActiveItem(sub.name)}
                           className={`flex items-center w-full p-2 rounded-lg transition-colors duration-200 ${
                             activeItem === sub.name
@@ -132,7 +144,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                           }`}
                         >
                           <span className="ml-2">{sub.name}</span>
-                        </button>
+                        </NavLink>
                       </li>
                     ))}
                   </ul>
@@ -161,6 +173,11 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
           className={`mt-4 flex items-center w-full p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 ${
             collapsed ? "justify-center" : ""
           }`}
+          onClick={() => {
+            localStorage.removeItem("token"); // TODO: Clean Up AUTHENTICATION
+            // Here I use useNavigate hook because it's easier to run code before I redirect
+            navigate("/login", {replace: true});
+}}
         >
           <IoMdLogOut size={20} />
           {!collapsed && <span className="ml-4">Logout</span>}

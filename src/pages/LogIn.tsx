@@ -5,7 +5,9 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleSubmit = () => {
-    navigate("/home");
+     // TODO: Authenticate
+  // Here I use useNavigate hook because it's easier to run code before I redirect
+    navigate("/active");
   };
 
   return (
