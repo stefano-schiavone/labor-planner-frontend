@@ -8,3 +8,6 @@ User logs in -> Greeted with Main Schedule (Current week) -> User clicks on new 
 2. Make Machine CRUD menu
 
 3. Make Jobs CRUD menu
+
+For design guidelines
+https://developer.apple.com/design/human-interface-guidelines/ 
