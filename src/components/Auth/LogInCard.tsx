@@ -1,197 +1,177 @@
 import React, { useState } from "react";
-import ForgotPassword from "./ForgotPassword.tsx";
+import ForgotPassword from "./ForgotPassword";
 
-const GoogleIcon: React.FC = () => <span>G</span>;
-const FacebookIcon: React.FC = () => <span>f</span>;
-const SitemarkIcon: React.FC = () => <span>Logo</span>;
+/**
+ * Brand color updated to Blue following Apple HIG guidance:
+ * - Primary brand: Blue
+ * - Base token: #2563EB (Tailwind blue-600)
+ * - Accent / focus token: #60A5FA (Tailwind blue-400)
+ *
+ * These are used inline with Tailwind bracket notation so they are visible immediately.
+ */
+
+const GoogleIcon: React.FC = () => <span className="w-4 h-4 flex items-center justify-center">G</span>;
+const FacebookIcon: React.FC = () => <span className="w-4 h-4 flex items-center justify-center">f</span>;
 
 interface LogInCardProps {
-  onSubmit?: () => void;
+   onSubmit?: () => void;
 }
 
-export const LogInCard: React.FC<LogInCardProps> = ({ onSubmit }) => {
-  const [open, setOpen] = useState<boolean>(false);
+const LogInCard: React.FC<LogInCardProps> = ({ onSubmit }) => {
+   const [open, setOpen] = useState<boolean>(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (onSubmit) onSubmit();
-  };
+   const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (onSubmit) onSubmit();
+   };
 
-  return (
-    <div
-      className="
-      max-w-sm mx-auto p-8 rounded-lg 
-      bg-[var(--color-gray-50)] dark:bg-[rgba(5,7,10,0.4)] 
-      border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)] 
-      shadow-md shadow-[hsla(220,30%,5%,0.07)] dark:shadow-[hsla(220,30%,5%,0.7)]
+   return (
+      <div
+         className="
+        max-w-md w-full
+        bg-white
+        border border-slate-200
+        rounded-2xl
+        shadow-lg
+        p-6
       "
-    >
-      {/* Logo */}
-      <div className="flex justify-center mb-6">
-        <SitemarkIcon />
-      </div>
-
-      {/* Title */}
-      <h1 className="text-3xl font-semibold text-center mb-6 text-[var(--color-gray-800)] dark:text-[var(--color-gray-50)]">
-        Log In
-      </h1>
-
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-4 mb-6"
-        noValidate
+         role="region"
+         aria-labelledby="signin-title"
       >
-        {/* Email Field */}
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-xs font-medium mb-1 text-[var(--color-gray-600)] dark:text-[var(--color-gray-300)]"
-          >
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            placeholder="your@email.com"
-            className="
-              w-full h-10 px-3 text-sm rounded-md
-              border border-[var(--color-gray-300)] dark:border-[var(--color-gray-700)]
-              bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)]
-              text-[var(--color-gray-800)] dark:text-[var(--color-gray-50)]
-              focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-400)] focus:ring-opacity-50
-              hover:border-[var(--color-gray-400)] dark:hover:border-[var(--color-gray-500)]
-              transition-colors
-            "
-          />
-        </div>
+         {/* Title */}
+         <h1 id="signin-title" className="text-2xl font-semibold text-slate-900 text-center mb-6">
+            Log in
+         </h1>
 
-        {/* Password Field */}
-        <div>
-          <div className="flex justify-between items-center mb-1">
-            <label
-              htmlFor="password"
-              className="text-xs font-medium text-[var(--color-gray-600)] dark:text-[var(--color-gray-300)]"
-            >
-              Password
+         <form onSubmit={handleSubmit} className="flex flex-col gap-4 mb-6" noValidate>
+            {/* Email Field */}
+            <div>
+               <label htmlFor="email" className="block text-xs font-medium mb-1 text-slate-600">
+                  Email
+               </label>
+               <input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  required
+                  className="
+              w-full h-11 px-3 text-sm rounded-lg
+              border border-slate-200
+              bg-white
+              text-slate-900
+              focus:outline-none focus:ring-2 focus:ring-[rgba(96,165,250,0.25)] focus:ring-offset-1
+              hover:border-slate-300 transition
+            "
+               />
+            </div>
+
+            {/* Password Field */}
+            <div>
+               <div className="flex justify-between items-center mb-1">
+                  <label htmlFor="password" className="text-xs font-medium text-slate-600">
+                     Password
+                  </label>
+                  <button
+                     type="button"
+                     onClick={() => setOpen(true)}
+                     className="text-xs font-medium text-[#2563EB] hover:underline"
+                  >
+                     Forgot?
+                  </button>
+               </div>
+               <input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  required
+                  className="
+              w-full h-11 px-3 text-sm rounded-lg
+              border border-slate-200
+              bg-white
+              text-slate-900
+              focus:outline-none focus:ring-2 focus:ring-[rgba(96,165,250,0.25)] focus:ring-offset-1
+              hover:border-slate-300 transition
+            "
+               />
+            </div>
+
+            {/* Remember Me */}
+            <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+               <input
+                  type="checkbox"
+                  className="
+              w-4 h-4 rounded-sm border border-slate-300
+              bg-white
+              accent-[#2563EB]
+              focus:outline-none focus:ring-2 focus:ring-[rgba(96,165,250,0.25)] focus:ring-offset-1
+              transition
+            "
+               />
+               Remember me
             </label>
+
+            {/* Forgot Password Modal */}
+            <ForgotPassword open={open} handleClose={() => setOpen(false)} />
+
+            {/* Log In Button */}
             <button
-              type="button"
-              onClick={() => setOpen(true)}
-              className="text-xs font-medium text-white hover:underline"
+               type="submit"
+               className="
+            h-11 rounded-lg
+            w-full
+            bg-[#2563EB]
+            text-white font-medium text-sm
+            shadow
+            hover:bg-[#1f4fd6]
+            active:bg-[#1844b8]
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-[#60A5FA] focus-visible:ring-offset-1
+            transition
+          "
             >
-              Forgot your password?
+               Log in
             </button>
-          </div>
-          <input
-            id="password"
-            type="password"
-            placeholder="••••••••"
-            className="
-              w-full h-10 px-3 text-sm rounded-md
-              border border-[var(--color-gray-300)] dark:border-[var(--color-gray-700)]
-              bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)]
-              text-[var(--color-gray-800)] dark:text-[var(--color-gray-50)]
-              focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-400)] focus:ring-opacity-50
-              hover:border-[var(--color-gray-400)] dark:hover:border-[var(--color-gray-500)]
-              transition-colors
-            "
-          />
-        </div>
 
-        {/* Remember Me */}
-        <label className="flex items-center gap-2 text-sm text-[var(--color-gray-600)] dark:text-white cursor-pointer">
-          <input
-            type="checkbox"
-            className="
-              w-4 h-4 rounded-[5px] border border-[var(--color-gray-300)] dark:border-[var(--color-gray-700)]
-              bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-800)]
-              accent-[var(--color-brand-500)]
-              focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-500)] focus:ring-opacity-50
-              hover:border-[var(--color-brand-300)]
-              transition-colors
-            "
-          />
-          Remember me
-        </label>
+            {/* Sign Up Link */}
+            <p className="text-center text-sm text-slate-600">
+               Don’t have an account?{" "}
+               <a href="#" className="font-medium text-[#2563EB] hover:underline">
+                  Sign up
+               </a>
+            </p>
+         </form>
 
-        {/* Forgot Password Modal */}
-        <ForgotPassword open={open} handleClose={() => setOpen(false)} />
+         {/* Divider */}
+         <div className="flex items-center text-slate-300 mb-4">
+            <div className="flex-1 h-px bg-slate-200"></div>
+            <span className="px-3 text-sm text-slate-400">or</span>
+            <div className="flex-1 h-px bg-slate-200"></div>
+         </div>
 
-        {/* Log In Button */}
-        <button
-          type="submit"
-          className="
-            h-10 rounded-md border border-[var(--color-gray-700)]
-            bg-gradient-to-b from-[var(--color-gray-700)] to-[var(--color-gray-800)]
-            dark:from-[var(--color-gray-50)] dark:to-[var(--color-gray-100)]
-            dark:!text-black text-white text-sm font-medium
-            shadow-inner
-            hover:from-[var(--color-gray-600)] hover:to-[var(--color-gray-700)]
-            dark:hover:from-[var(--color-gray-200)] dark:hover:to-[var(--color-gray-50)]
-            active:bg-[var(--color-gray-800)] dark:active:bg-[var(--color-gray-200)]
-            focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-500)] focus-visible:ring-opacity-50
-            transition-all
+         {/* Social Login Buttons */}
+         <div className="flex flex-col gap-3">
+            <button
+               type="button"
+               className="
+            h-11 flex items-center justify-center gap-2 rounded-lg border border-slate-200
+            bg-white text-sm font-medium text-slate-800
+            hover:bg-slate-50 transition
           "
-        >
-          Log in
-        </button>
-
-        {/* Sign Up Link */}
-        <p className="text-center text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-100)]">
-          Don’t have an account?{" "}
-          <a
-            href="#"
-            className="
-              relative font-medium text-[var(--color-brand-500)]
-              w-fit dark:!text-white
-              before:content-[''] before:absolute before:left-0 before:bottom-0 before:h-[1px]
-              before:w-full before:bg-[var(--color-gray-500)] before:opacity-30 before:transition-all
-              hover:before:w-0
-              focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--color-brand-500)] focus-visible:outline-offset-1
-              focus-visible:rounded-sm
-            "
-          >
-            Sign up
-          </a>
-        </p>
-      </form>
-
-      {/* Divider */}
-      <div className="flex items-center text-[var(--color-gray-500)] dark:text-[var(--color-gray-400)] mb-6">
-        <div className="flex-1 h-px bg-[var(--color-gray-300)] dark:bg-[var(--color-gray-700)]"></div>
-        <span className="px-4 text-sm text-black dark:text-white">or</span>
-        <div className="flex-1 h-px bg-[var(--color-gray-300)] dark:bg-[var(--color-gray-700)]"></div>
+            >
+               <GoogleIcon /> Sign in with Google
+            </button>
+            <button
+               type="button"
+               className="
+            h-11 flex items-center justify-center gap-2 rounded-lg border border-slate-200
+            bg-white text-sm font-medium text-slate-800
+            hover:bg-slate-50 transition
+          "
+            >
+               <FacebookIcon /> Sign in with Facebook
+            </button>
+         </div>
       </div>
-
-      {/* Social Login Buttons */}
-      <div className="flex flex-col gap-3">
-        <button
-          type="button"
-          className="
-            h-10 flex items-center justify-center gap-2 rounded-md border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)]
-            bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)]
-            hover:bg-[var(--color-gray-100)] dark:hover:bg-[var(--color-gray-900)]
-            text-sm font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-50)]
-            transition-colors
-          "
-        >
-          <GoogleIcon /> Sign in with Google
-        </button>
-        <button
-          type="button"
-          className="
-            h-10 flex items-center justify-center gap-2 rounded-md border border-[var(--color-gray-200)] dark:border-[var(--color-gray-700)]
-            bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)]
-            hover:bg-[var(--color-gray-100)] dark:hover:bg-[var(--color-gray-900)]
-            text-sm font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-50)]
-            transition-colors
-          "
-        >
-          <FacebookIcon /> Sign in with Facebook
-        </button>
-      </div>
-    </div>
-  );
+   );
 };
 
 export default LogInCard;
