@@ -2,7 +2,8 @@ import React from "react";
 
 interface TableProps {
    columns: string[];
-   data: string[][];
+   // cells may be strings or React nodes (for checkboxes, buttons, etc.)
+   data: Array<Array<string | React.ReactNode>>;
    // Optional maxHeight for the scrollable table body (CSS value like '220px' or '48rem')
    maxHeight?: string;
    // Optional flag to disable internal scrolling (makes table expand to fit)
@@ -13,7 +14,6 @@ interface TableProps {
  * DataTable:
  * - If maxHeight is provided and noScroll is false, tbody becomes scrollable with its own scroll.
  * - Uses table-fixed + colgroup (keeps column alignment consistent).
- * - Adds a thin inner shadow and subtle scrollbar styling (native) for Apple-like subtlety.
  */
 const DataTable: React.FC<TableProps> = ({ columns, data, maxHeight, noScroll }) => {
    const colWidth = `${100 / columns.length}%`;
@@ -31,7 +31,6 @@ const DataTable: React.FC<TableProps> = ({ columns, data, maxHeight, noScroll })
           overflow-hidden
         "
          >
-            {/* Small padding difference between header and body so the table lines up with page padding */}
             <div className="overflow-x-auto">
                <table className="min-w-full table-fixed text-left divide-y divide-slate-200">
                   <colgroup>
@@ -54,9 +53,6 @@ const DataTable: React.FC<TableProps> = ({ columns, data, maxHeight, noScroll })
                      </tr>
                   </thead>
 
-                  {/* If noScroll is true, render tbody normally so it expands with content.
-                If maxHeight provided and noScroll is false, wrap tbody rows in a scrollable div
-                so the table header stays fixed visually while the rows scroll. */}
                   {noScroll || !maxHeight ? (
                      <tbody className="bg-white">
                         {data.map((row, i) => (
@@ -66,7 +62,11 @@ const DataTable: React.FC<TableProps> = ({ columns, data, maxHeight, noScroll })
                                  } hover:bg-slate-100 transition-colors duration-150`}
                            >
                               {row.map((cell, j) => (
-                                 <td key={j} className="px-4 py-3 align-middle text-sm text-slate-700 truncate">
+                                 <td
+                                    key={j}
+                                    className="px-4 py-3 align-middle text-sm text-slate-700 truncate"
+                                 // allow any node inside
+                                 >
                                     {cell}
                                  </td>
                               ))}
@@ -78,10 +78,7 @@ const DataTable: React.FC<TableProps> = ({ columns, data, maxHeight, noScroll })
                      <tbody>
                         <tr className="h-0">
                            <td colSpan={columns.length} className="p-0">
-                              <div
-                                 style={{ maxHeight }}
-                                 className="overflow-y-auto"
-                              >
+                              <div style={{ maxHeight }} className="overflow-y-auto">
                                  <table className="min-w-full table-fixed">
                                     <colgroup>
                                        {columns.map((_, i) => (
@@ -96,7 +93,10 @@ const DataTable: React.FC<TableProps> = ({ columns, data, maxHeight, noScroll })
                                                 } hover:bg-slate-100 transition-colors duration-150`}
                                           >
                                              {row.map((cell, j) => (
-                                                <td key={j} className="px-4 py-3 align-middle text-sm text-slate-700 truncate">
+                                                <td
+                                                   key={j}
+                                                   className="px-4 py-3 align-middle text-sm text-slate-700 truncate"
+                                                >
                                                    {cell}
                                                 </td>
                                              ))}
