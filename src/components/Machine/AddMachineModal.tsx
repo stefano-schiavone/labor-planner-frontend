@@ -1,6 +1,11 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface MachineTypeOption {
+   uuid: string;
+   name: string;
+}
+
+interface MachineStatusOption {
    uuid: string;
    name: string;
 }
@@ -8,12 +13,13 @@ interface MachineTypeOption {
 interface Props {
    open: boolean;
    onClose: () => void;
-   machineTypes: MachineTypeOption[]; // options to choose from
+   machineTypes: MachineTypeOption[];
+   statusOptions: MachineStatusOption[];
    onCreate: (payload: {
       name: string;
       description?: string;
-      machineTypeUuid?: string;
-      status: string;
+      machineTypeUuid: string;
+      statusOptionUuid: string;
    }) => Promise<void>;
 }
 
@@ -23,11 +29,13 @@ interface Props {
  * - Provide name, description, and status
  * - Respect app visual language used across the project
  */
-const AddMachineModal: React.FC<Props> = ({ open, onClose, machineTypes, onCreate }) => {
+const AddMachineModal: React.FC<Props> = ({ open, onClose, machineTypes, statusOptions, onCreate }) => {
    const [name, setName] = useState("");
    const [description, setDescription] = useState("");
+   // Fallback to "" because if anyone tries to send the request with no machine type or status, it will
+   // get blocked because MachineRequest in backend has @NotBlank
    const [typeUuid, setTypeUuid] = useState<string | "">("");
-   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
+   const [statusUuid, setStatusUuid] = useState<string | "">("");
    const [submitting, setSubmitting] = useState(false);
    const [error, setError] = useState<string | null>(null);
 
@@ -37,14 +45,13 @@ const AddMachineModal: React.FC<Props> = ({ open, onClose, machineTypes, onCreat
          setName("");
          setDescription("");
          setTypeUuid(machineTypes.length > 0 ? machineTypes[0].uuid : "");
-         setStatus("Active");
+         setStatusUuid(statusOptions.length > 0 ? statusOptions[0].uuid : "");
          setError(null);
          setSubmitting(false);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [open]);
 
-   const statusOptions = useMemo(() => ["Active", "Inactive"], []);
 
    if (!open) return null;
 
@@ -67,7 +74,7 @@ const AddMachineModal: React.FC<Props> = ({ open, onClose, machineTypes, onCreat
          name: name.trim(),
          description: description.trim(),
          machineTypeUuid: typeUuid,
-         status,
+         statusOptionUuid: statusUuid,
       })
          .then(() => {
             setName("");
@@ -146,14 +153,14 @@ const AddMachineModal: React.FC<Props> = ({ open, onClose, machineTypes, onCreat
                      </label>
                      <select
                         id="machine-status"
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value as any)}
-                        className="w-full h-11 px-3 text-sm rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-[rgba(96,165,250,0.25)] focus:ring-offset-1 hover:border-slate-300 transition"
+                        value={statusUuid}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setStatusUuid(e.target.value)}
+                        className="w-full h-11 px-3 text-sm rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-[rgba(96,165,250,0.25)] focus:ring-offset-1 hover:border-slate-300 transition capitalize"
                         disabled={submitting}
                      >
                         {statusOptions.map((s) => (
-                           <option key={s} value={s}>
-                              {s}
+                           <option key={s.uuid} value={s.uuid}>
+                              {s.name}
                            </option>
                         ))}
                      </select>
