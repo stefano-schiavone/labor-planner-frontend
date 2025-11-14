@@ -29,7 +29,7 @@ interface ServerMachine {
    machineStatusUuid: string;
 }
 
-// TODO: Eventually get machine status rules dynamically.
+// TODO: Active/Inactive counting is done wrong
 // For now: if a machine is "running" or "active", it counts as ACTIVE; otherwise INACTIVE.
 const Machines: React.FC = () => {
    // List of machines shown in the UI

@@ -10,6 +10,10 @@
    padding: 0;
 }
 
+[role="dialog"] {
+   margin: 0 !important;
+}
+
 /* === Global Typography & Colors === */
 :root {
    font-family:
@@ -41,6 +45,10 @@ a {
    margin: 0;
 }
 
+.ml-auto {
+   margin-left: auto;
+}
+
 .mt-0 {
    margin-top: 0;
 }
@@ -48,6 +56,7 @@ a {
 .mt-1 {
    margin-top: 0.25rem;
 }
+
 
 .mt-2 {
    margin-top: 0.5rem;
@@ -99,6 +108,10 @@ a {
 
 .ml-1 {
    margin-left: 0.25rem;
+}
+
+.mt-1 {
+   margin-top: 0.25rem;
 }
 
 .ml-2 {
@@ -171,8 +184,16 @@ a {
    padding: 0.75rem;
 }
 
+.pl-3 {
+   padding-left: 0.75rem;
+}
+
 .p-4 {
    padding: 1rem;
+}
+
+.pl-4 {
+   padding-left: 1rem;
 }
 
 .p-6 {
@@ -181,6 +202,10 @@ a {
 
 .p-8 {
    padding: 2rem;
+}
+
+.pr-10 {
+   padding-right: 2.5rem;
 }
 
 .px-0 {
@@ -192,6 +217,7 @@ a {
    padding-left: 0.25rem;
    padding-right: 0.25rem;
 }
+
 
 .px-2 {
    padding-left: 0.5rem;
@@ -208,9 +234,19 @@ a {
    padding-right: 1rem;
 }
 
+.px-5 {
+   padding-left: 1.25rem;
+   padding-right: 1.25rem;
+}
+
 .px-6 {
    padding-left: 1.5rem;
    padding-right: 1.5rem;
+}
+
+.px-8 {
+   padding-left: 2rem;
+   padding-right: 2rem;
 }
 
 .py-1 {
@@ -241,6 +277,11 @@ a {
 .py-6 {
    padding-top: 1.5rem;
    padding-bottom: 1.5rem;
+}
+
+.py-12 {
+   padding-top: 3rem;
+   padding-bottom: 3rem;
 }
 
 /* === Space Utilities === */
