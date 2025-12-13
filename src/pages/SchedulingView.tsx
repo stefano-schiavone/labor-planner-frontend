@@ -1,12 +1,13 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const SchedulingResult: React.FC = () => {
+const SchedulingView: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   // The schedule was passed via navigate(..., { state: { schedule } })
   const schedule = (location.state as { schedule?: any })?.schedule;
+  const weekId = location.state?.weekId;
 
   if (!schedule) {
     return (
@@ -27,7 +28,7 @@ const SchedulingResult: React.FC = () => {
 
   return (
     <div className="p-6 space-y-4">
-      <h1 className="text-xl font-semibold">Scheduling Result</h1>
+      <h1 className="text-xl font-semibold">Current {weekId} Schedule</h1>
 
       {/* Pretty-printed JSON */}
       <pre className="bg-slate-100 border border-slate-300 rounded p-4 overflow-auto text-sm">
@@ -47,4 +48,5 @@ const SchedulingResult: React.FC = () => {
   );
 };
 
-export default SchedulingResult;
+export default SchedulingView;
+

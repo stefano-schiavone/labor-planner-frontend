@@ -288,11 +288,11 @@ const Machines: React.FC = () => {
       //
       // IMPORTANT:
       //  - If a machine uses a type name not found in machineTypes,
-      //    we still include it. These represent "unofficial" types that exist
+      //    I still include it. These represent "unofficial" types that exist
       //    only in machine data (e.g., old data, typos, or removed types).
       //
       //  - If a machine has no type at all (null/undefined),
-      //    we use the string "Unknown".
+      //    I use the string "Unknown".
       for (const m of machines) {
          const key = m.type || "Unknown";
 

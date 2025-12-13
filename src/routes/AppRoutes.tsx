@@ -10,6 +10,7 @@ import Upcoming from "../pages/Upcoming";
 import Users from "../pages/Users";
 import SchedulingWeekSelector from "../pages/SchedulingWeekSelector.tsx";
 import SchedulingResult from "../pages/SchedulingResult.tsx";
+import SchedulingView from "../pages/SchedulingView.tsx";
 import SchedulingJobs from "../pages/SchedulingJobs.tsx";
 
 export default function AppRoutes() {
@@ -21,7 +22,8 @@ export default function AppRoutes() {
             <Route path="/active" element={<Active />} />
             <Route path="/scheduling" element={<SchedulingWeekSelector />} />
             <Route path="/scheduling/:week/Jobs" element={<SchedulingJobs />} />
-            <Route path="/scheduling" element={<SchedulingResult />} />
+            <Route path="/scheduling/result" element={<SchedulingResult />} />
+            <Route path="/scheduling/view" element={<SchedulingView />} />
             <Route path="/upcoming" element={<Upcoming />} />
             <Route path="/machines" element={<Machines />} />
             <Route path="/users" element={<Users />} />

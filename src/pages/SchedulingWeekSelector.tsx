@@ -93,52 +93,46 @@ const SchedulingWeekSelector: React.FC = () => {
 
 
    const handleConfirm = async () => {
-      // When user confirms, check if a schedule already exists for the chosen week.
-      // If exists -> navigate to /scheduling/result (pass schedule + bounds in state)
-      // Otherwise -> navigate to /scheduling/{weekId}/Jobs
-      const weekId = selectedWeekStart;
-      const iso = parseISOWeekId(weekId);
-      let weekStartISO = "";
-      let weekEndISO = "";
-      if (iso) {
-         const { startISO, endISO } = getWeekRangeISO(iso.week, iso.year);
-         weekStartISO = startISO;
-         weekEndISO = endISO;
-      }
+   const weekId = selectedWeekStart;
+   const iso = parseISOWeekId(weekId);
+   let weekStartISO = "";
+   let weekEndISO = "";
 
-      setLoading(true);
-      try {
-         // Prefer schedule endpoint that returns schedule if exists
-         // TODO: Make on backend
-         const scheduleRes = await fetch(`/api/schedules/${encodeURIComponent(weekId)}`);
-         if (scheduleRes.ok) {
-            // schedule exists - get the schedule and route to result
-            const data = await scheduleRes.json();
-            // Provide schedule and week bounds to the result page
-            navigate("/scheduling/result", { state: { schedule: data.schedule, scheduledJobs: data.scheduledJobs, weekStartISO, weekEndISO, weekId } });
-            return;
-         }
+   if (iso) {
+      const { startISO, endISO } = getWeekRangeISO(iso.week, iso.year);
+      weekStartISO = startISO;
+      weekEndISO = endISO;
+   }
 
-         // If schedule endpoint returned 404 or not found, fall back to combined endpoint or simply go to Jobs page
-         const combinedRes = await fetch(`/api/schedules/for-week?week=${encodeURIComponent(weekId)}`);
-         if (combinedRes.ok) {
-            const payload = await combinedRes.json();
-            if (payload && payload.schedule) {
-               navigate("/scheduling/result", { state: { schedule: payload.schedule, scheduledJobs: payload.scheduledJobs || [], weekStartISO, weekEndISO, weekId } });
-               return;
-            }
-         }
+   setLoading(true);
+   try {
+            const res = await fetch("/api/schedules/for-week", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ weekStart: weekStartISO, weekEnd: weekEndISO }),
+            });
 
-         // No schedule -> go to Jobs page for that week so the UI can show candidate jobs by deadline
-         navigate(`/scheduling/${encodeURIComponent(weekId)}/Jobs`);
-      } catch (err) {
-         console.error(err);
-         // On error, route to Jobs page (safer fallback)
-         navigate(`/scheduling/${encodeURIComponent(weekId)}/Jobs`);
-      } finally {
-         setLoading(false);
-      }
-   };
+            if (!res.ok) throw new Error("Failed to check schedule");
+
+            const data = await res.json();
+
+            if (data.exists) {
+    navigate("/scheduling/view", {
+        state: { schedule: data.schedule, scheduledJobs: data.scheduledJobs ?? [], startISO: weekStartISO, endISO: weekEndISO, weekId: selectedWeekStart },
+    });
+} else {
+    navigate(`/scheduling/${encodeURIComponent(selectedWeekStart)}/Jobs`, {
+        state: { candidateJobs: data.candidateJobs ?? [], startISO: weekStartISO, endISO: weekEndISO },
+    });
+}
+        } catch (err) {
+            console.error(err);
+            alert("Failed to check schedule. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+};
+
 
    return (
       <div className="overflow-hidden px-4 py-6 min-h-[calc(100vh-48px)] flex flex-col">

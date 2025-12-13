@@ -130,14 +130,6 @@ const LogInCard: React.FC<LogInCardProps> = ({ onSubmit }) => {
             >
                Log in
             </button>
-
-            {/* Sign Up Link */}
-            <p className="text-center text-sm text-slate-600">
-               Don’t have an account?{" "}
-               <a href="#" className="font-medium text-[#2563EB] hover:underline">
-                  Sign up
-               </a>
-            </p>
          </form>
 
          {/* Divider */}
