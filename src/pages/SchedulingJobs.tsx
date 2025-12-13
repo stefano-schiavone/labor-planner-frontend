@@ -220,6 +220,7 @@ if (weekStartISO && weekEndISO) {
         } else {
           await fetchWeekJobs();
         }
+        setLoading(false);
     },
     [isoInfo, selectedWeekStart, weekStartISO, weekEndISO, machineTypes, fetchWeekJobs]
   );
