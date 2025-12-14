@@ -75,6 +75,7 @@ function formatMinutesForTable(minutes?: number): string {
 const SchedulingJobs: React.FC = () => {
   const navigate = useNavigate();
   const { week } = useParams<{ week?: string }>();
+  const [generating, setGenerating] = useState(false);
 
   const decodedWeek = useMemo(() => {
     if (!week) return "";
@@ -418,31 +419,68 @@ function formatDeadlineForTable(isoDate?: string): string {
               </button>
 
               <button
-                 onClick={async () => {
-                   const res = await fetch("/api/schedules/solve-for-week", {
-                     method: "POST",
-                     headers: { "Content-Type": "application/json" },
-                     body: JSON.stringify({
-                       weekStart: weekStartISO,
-                       weekEnd: weekEndISO,
-                     }),
-                   });
+  onClick={async () => {
+  setGenerating(true);
 
-                   if (!res.ok) {
-                     alert("Failed to generate schedule");
-                     return;
-                   }
+  try {
+    const res = await fetch("/api/schedules/solve-for-week", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ weekStart: weekStartISO, weekEnd: weekEndISO }),
+    });
 
-                   const schedule = await res.json();
+    let data: any;
+    try {
+      data = await res.json();
+    } catch {
+      data = null; // JSON parse failed
+    }
 
-                   navigate("/scheduling/result", {
-                     state: { schedule },
-                   });
-                 }}
-                 className="inline-flex items-center px-3 py-1.5 text-sm rounded-lg bg-[#2563EB] text-white hover:bg-[#1F4FD6]"
-               >
-                 Generate schedule
-            </button>
+    if (!res.ok) {
+      const message =
+        data?.type === "INFEASIBLE_SCHEDULE"
+          ? data.message ?? "Schedule is infeasible for this week."
+          : "Failed to generate schedule";
+      alert(message);
+      return;
+    }
+
+    // Successful response
+    navigate("/scheduling/result", { state: { schedule: data } });
+  } catch (err) {
+    console.error(err);
+    alert("Failed to generate schedule");
+  } finally {
+    setGenerating(false);
+  }
+}}
+  className="inline-flex items-center px-3 py-1.5 text-sm rounded-lg bg-[#2563EB] text-white hover:bg-[#1F4FD6] disabled:opacity-60"
+  disabled={generating}
+>
+  {generating && (
+    <svg
+      className="animate-spin h-4 w-4 mr-2 text-white"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      ></circle>
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 11-8 8h4l-3 3 3 3h-4z"
+      ></path>
+    </svg>
+  )}
+  {generating ? "Generating…" : "Generate schedule"}
+</button>
             <button
             onClick={handleGoToSchedule}
             className="inline-flex items-center px-3 py-1.5 text-sm rounded-lg bg-[#2563EB] text-white hover:bg-[#1F4FD6]"
