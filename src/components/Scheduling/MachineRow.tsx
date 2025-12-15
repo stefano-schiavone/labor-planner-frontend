@@ -1,4 +1,3 @@
-// contents of file
 import React from "react";
 import type { Machine, ScheduledJob } from "../../types/scheduling";
 import {
@@ -92,6 +91,7 @@ const MachineRow: React.FC<Props> = ({ machine, machineJobs, days, dayIndexMap, 
                // convert displayed time back to clock minutes by adding BUSINESS_START_MINUTES
                const displayStartClockMin = BUSINESS_START_MINUTES + Math.max(0, jobStartRel);
                const displayStartClockForVisible = BUSINESS_START_MINUTES + visibleStartRel;
+               // const displayEndClockMin = BUSINESS_START_MINUTES + visibleEndRel;
 
                return (
                   <div
@@ -107,7 +107,7 @@ const MachineRow: React.FC<Props> = ({ machine, machineJobs, days, dayIndexMap, 
                      title={`${sj.job?.name} — ${rawDay} ${formatTimeFromMinutes(displayStartClockMin)} • ${durationMinutes}m`}
                   >
                      <div className="truncate">{sj.job?.name}</div>
-                     <div className="text-[11px] opacity-90">{formatTimeFromMinutes(displayStartClockForVisible)} • {visibleDuration}m</div>
+                     <div className="text-[11px] opacity-90 truncate">{formatTimeFromMinutes(displayStartClockForVisible)} • {formatTimeFromMinutes(BUSINESS_START_MINUTES + visibleEndRel)}</div>
                   </div>
                );
             })}

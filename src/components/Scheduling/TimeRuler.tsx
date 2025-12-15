@@ -1,4 +1,3 @@
-// contents of file
 import React from "react";
 import { VISIBLE_MINUTES_PER_DAY, BUSINESS_START_MINUTES, BUSINESS_END_MINUTES } from "../../utils/schedulingUtils";
 

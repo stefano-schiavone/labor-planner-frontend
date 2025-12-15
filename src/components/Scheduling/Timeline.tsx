@@ -1,4 +1,3 @@
-// contents of file
 import React, { useMemo, useState } from "react";
 import type { ServerSchedule } from "../../types/scheduling";
 import { normalizeDateOnlyIso, deriveGrainLength, startOfWeekIso } from "../../utils/schedulingUtils";
@@ -72,8 +71,9 @@ const Timeline: React.FC<Props> = ({ schedule }) => {
             <h2 className="text-lg font-semibold text-slate-900">Timeline</h2>
 
             <div className="flex items-center gap-3">
-               <div className="text-sm text-slate-500 mr-3">Zoom: {Math.round(pixelsPerMinute * 100) / 100}px/min</div>
-
+               <div className="text-sm text-slate-500 mr-3">
+                  Zoom: {(Math.round((pixelsPerMinute / DEFAULT_PIXELS_PER_MINUTE) * 100)) - 100}%
+               </div>
                <div className="flex items-center gap-2 bg-slate-50 p-2 rounded">
                   <button
                      onClick={zoomOut}

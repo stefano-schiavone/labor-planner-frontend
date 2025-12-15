@@ -1,4 +1,3 @@
-// contents of file
 import type { ServerSchedule, ScheduledJob, Machine } from "../types/scheduling";
 /* Helpers */
 
