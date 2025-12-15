@@ -11,6 +11,7 @@ export type ServerJob = {
    name: string;
    description?: string;
    durationMinutes?: number;
+   assignedTimeGrain: StartingTimeGrain;
    duration?: string;
    deadline?: string;
    requiredMachineTypeUuid?: string;
@@ -26,7 +27,7 @@ export type ScheduledJob = {
    scheduledJobUuid: string;
    job: ServerJob;
    assignedMachine?: Machine | null;
-   startingTimeGrain?: StartingTimeGrain | null;
+   startingTimeGrain?: StartingTimeGrain;
    durationInGrains?: number | null;
    endTimeGrainIndex?: number | null;
 };

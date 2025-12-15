@@ -38,7 +38,7 @@ const SchedulingView: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-3">
-               <button onClick={() => navigate(-1)} className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50">
+               <button onClick={() => navigate('/scheduling')} className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50">
                   Back
                </button>
                <button onClick={() => {

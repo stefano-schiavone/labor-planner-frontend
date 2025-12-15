@@ -93,45 +93,45 @@ const SchedulingWeekSelector: React.FC = () => {
 
 
    const handleConfirm = async () => {
-   const weekId = selectedWeekStart;
-   const iso = parseISOWeekId(weekId);
-   let weekStartISO = "";
-   let weekEndISO = "";
+      const weekId = selectedWeekStart;
+      const iso = parseISOWeekId(weekId);
+      let weekStartISO = "";
+      let weekEndISO = "";
 
-   if (iso) {
-      const { startISO, endISO } = getWeekRangeISO(iso.week, iso.year);
-      weekStartISO = startISO;
-      weekEndISO = endISO;
-   }
+      if (iso) {
+         const { startISO, endISO } = getWeekRangeISO(iso.week, iso.year);
+         weekStartISO = startISO;
+         weekEndISO = endISO;
+      }
 
-   setLoading(true);
-   try {
-            const res = await fetch("/api/schedules/for-week", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ weekStart: weekStartISO, weekEnd: weekEndISO }),
+      setLoading(true);
+      try {
+         const res = await fetch("/api/schedules/for-week", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ weekStart: weekStartISO, weekEnd: weekEndISO }),
+         });
+
+         if (!res.ok) throw new Error("Failed to check schedule");
+
+         const data = await res.json();
+
+         if (data.exists) {
+            navigate("/scheduling/view", {
+               state: { schedule: data.schedule, scheduledJobs: data.scheduledJobs ?? [], startISO: weekStartISO, endISO: weekEndISO, weekId: selectedWeekStart },
             });
-
-            if (!res.ok) throw new Error("Failed to check schedule");
-
-            const data = await res.json();
-
-            if (data.exists) {
-    navigate("/scheduling/view", {
-        state: { schedule: data.schedule, scheduledJobs: data.scheduledJobs ?? [], startISO: weekStartISO, endISO: weekEndISO, weekId: selectedWeekStart },
-    });
-} else {
-    navigate(`/scheduling/${encodeURIComponent(selectedWeekStart)}/Jobs`, {
-        state: { candidateJobs: data.candidateJobs ?? [], startISO: weekStartISO, endISO: weekEndISO },
-    });
-}
-        } catch (err) {
-            console.error(err);
-            alert("Failed to check schedule. Please try again.");
-        } finally {
-            setLoading(false);
-        }
-};
+         } else {
+            navigate(`/scheduling/${encodeURIComponent(selectedWeekStart)}/Jobs`, {
+               state: { candidateJobs: data.candidateJobs ?? [], startISO: weekStartISO, endISO: weekEndISO },
+            });
+         }
+      } catch (err) {
+         console.error(err);
+         alert("Failed to check schedule. Please try again.");
+      } finally {
+         setLoading(false);
+      }
+   };
 
 
    return (

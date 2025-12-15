@@ -18,13 +18,14 @@ type Props = {
    trackWidth: number;
    grainLengthMinutes: number;
    pixelsPerMinute: number;
+   onJobClick?: (job: ScheduledJob, anchorRect: DOMRect) => void;
 };
 
 /*
   MachineRow now renders its left column as sticky left:0 so the left column remains visible
   while the track scrolls horizontally inside the shared scroll container.
 */
-const MachineRow: React.FC<Props> = ({ machine, machineJobs, days, dayIndexMap, trackWidth, grainLengthMinutes, pixelsPerMinute }) => {
+const MachineRow: React.FC<Props> = ({ machine, machineJobs, days, dayIndexMap, trackWidth, grainLengthMinutes, pixelsPerMinute, onJobClick }) => {
    const machineId = (machine?.machineUuid ?? "unassigned").toLowerCase();
 
    return (
@@ -96,7 +97,7 @@ const MachineRow: React.FC<Props> = ({ machine, machineJobs, days, dayIndexMap, 
                return (
                   <div
                      key={sj.scheduledJobUuid}
-                     className="absolute top-3 rounded-md text-white text-xs font-medium overflow-hidden shadow"
+                     className="absolute top-3 rounded-md text-white text-xs font-medium overflow-hidden shadow cursor-pointer"
                      style={{
                         left,
                         width: finalWidth,
@@ -105,6 +106,13 @@ const MachineRow: React.FC<Props> = ({ machine, machineJobs, days, dayIndexMap, 
                         padding: "6px 8px",
                      }}
                      title={`${sj.job?.name} — ${rawDay} ${formatTimeFromMinutes(displayStartClockMin)} • ${durationMinutes}m`}
+                     onClick={(e) => {
+                        // pass bounding rect to parent so popover can position itself
+                        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                        onJobClick?.(sj, rect);
+                        // stop propagation so row/container handlers don't also fire
+                        e.stopPropagation();
+                     }}
                   >
                      <div className="truncate">{sj.job?.name}</div>
                      <div className="text-[11px] opacity-90 truncate">{formatTimeFromMinutes(displayStartClockForVisible)} • {formatTimeFromMinutes(BUSINESS_START_MINUTES + visibleEndRel)}</div>

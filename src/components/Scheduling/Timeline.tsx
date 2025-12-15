@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import type { ServerSchedule } from "../../types/scheduling";
+import React, { useMemo, useState, useEffect } from "react";
+import type { ServerSchedule, ScheduledJob, StartingTimeGrain } from "../../types/scheduling";
 import { normalizeDateOnlyIso, deriveGrainLength, startOfWeekIso } from "../../utils/schedulingUtils";
 import {
    VISIBLE_MINUTES_PER_DAY,
@@ -7,10 +7,12 @@ import {
    DEFAULT_PIXELS_PER_MINUTE,
    MIN_PIXELS_PER_MINUTE,
    MAX_PIXELS_PER_MINUTE,
+   BUSINESS_START_MINUTES,
 } from "../../utils/schedulingUtils";
 import TimeRuler from "./TimeRuler";
 import MachineRow from "./MachineRow";
 import { buildMachinesFromSchedule, jobsForMachine } from "../../utils/schedulingUtils";
+import JobPopover from "./JobPopover";
 
 type Day = { iso: string; label: string };
 
@@ -50,6 +52,57 @@ const Timeline: React.FC<Props> = ({ schedule }) => {
 
    const scheduledJobs = schedule.scheduledJobList || [];
 
+   // ----- Normalize scheduled jobs so MachineRow can rely on startingTimeGrain being populated and relative -----
+   const normalizedScheduledJobs = useMemo(() => {
+      // helper: normalize an incoming grain object
+      function normalizeGrain(raw?: Partial<StartingTimeGrain> | null): StartingTimeGrain | undefined {
+         if (!raw) return undefined;
+         const dateIso = normalizeDateOnlyIso(raw.date ?? null) ?? null;
+         // prefer provided startingMinuteOfDay if given, otherwise derive from grainIndex
+         let startingMinuteOfDay = typeof raw.startingMinuteOfDay === "number" ? raw.startingMinuteOfDay : undefined;
+         if (startingMinuteOfDay == null && typeof raw.grainIndex === "number") {
+            startingMinuteOfDay = Math.round(raw.grainIndex * grainLengthMinutes);
+         }
+         if (startingMinuteOfDay == null) return undefined;
+
+         // If server supplied absolute minutes-of-day (e.g. 480) convert to relative-to-business-window
+         // so 0 corresponds to BUSINESS_START_MINUTES in the UI math.
+         let relative = startingMinuteOfDay;
+         if (startingMinuteOfDay >= BUSINESS_START_MINUTES && startingMinuteOfDay <= BUSINESS_START_MINUTES + VISIBLE_MINUTES_PER_DAY) {
+            relative = startingMinuteOfDay - BUSINESS_START_MINUTES;
+         } else if (startingMinuteOfDay > VISIBLE_MINUTES_PER_DAY && startingMinuteOfDay < BUSINESS_START_MINUTES) {
+            // some weird values: clamp into visible window conservatively
+            relative = Math.max(0, Math.min(VISIBLE_MINUTES_PER_DAY, startingMinuteOfDay - BUSINESS_START_MINUTES));
+         }
+         // clamp to visible day range
+         relative = Math.max(-1440, Math.min(1440, relative));
+         return {
+            grainIndex: raw.grainIndex ?? Math.floor(relative / Math.max(1, grainLengthMinutes)),
+            startingMinuteOfDay: relative,
+            date: dateIso ?? "",
+         } as StartingTimeGrain;
+      }
+
+      return scheduledJobs.map((sj) => {
+         // look in multiple places for the assigned/starting info
+         const candidate =
+            sj.startingTimeGrain ??
+            // job may carry the assigned grain (some API shapes)
+            (sj.job as any)?.assignedTimeGrain ??
+            (sj as any)?.assignedTimeGrain ??
+            undefined;
+
+         const norm = normalizeGrain(candidate as any) ?? undefined;
+
+         // produce a shallow copy but with startingTimeGrain set if we found one
+         return {
+            ...sj,
+            // if sj.startingTimeGrain was missing, set it from computed norm; otherwise keep original
+            startingTimeGrain: sj.startingTimeGrain ?? norm ?? undefined,
+         } as ScheduledJob;
+      });
+   }, [scheduledJobs, grainLengthMinutes]);
+
    // Zoom state (pixels per minute)
    const [pixelsPerMinute, setPixelsPerMinute] = useState<number>(DEFAULT_PIXELS_PER_MINUTE);
 
@@ -65,8 +118,27 @@ const Timeline: React.FC<Props> = ({ schedule }) => {
       return <div className="p-6">No valid week start date in schedule</div>;
    }
 
+   // Popover state: selected job + anchor rect in viewport coordinates
+   const [selected, setSelected] = useState<{ job: ScheduledJob; anchorRect: DOMRect } | null>(null);
+
+   // Close on escape
+   useEffect(() => {
+      function onKey(e: KeyboardEvent) {
+         if (e.key === "Escape") setSelected(null);
+      }
+      if (selected) {
+         document.addEventListener("keydown", onKey);
+         return () => document.removeEventListener("keydown", onKey);
+      }
+   }, [selected]);
+
+   // Handler passed to MachineRow
+   const handleJobClick = (job: ScheduledJob, anchorRect: DOMRect) => {
+      setSelected({ job, anchorRect });
+   };
+
    return (
-      <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm relative">
          <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold text-slate-900">Timeline</h2>
 
@@ -124,7 +196,7 @@ const Timeline: React.FC<Props> = ({ schedule }) => {
 
                {/* Rows */}
                {machines.map((m) => {
-                  const machineJobs = jobsForMachine(scheduledJobs, m);
+                  const machineJobs = jobsForMachine(normalizedScheduledJobs, m);
                   return (
                      <MachineRow
                         key={(m.machineUuid ?? "unassigned").toLowerCase()}
@@ -135,11 +207,29 @@ const Timeline: React.FC<Props> = ({ schedule }) => {
                         trackWidth={trackWidth}
                         grainLengthMinutes={grainLengthMinutes}
                         pixelsPerMinute={pixelsPerMinute}
+                        onJobClick={handleJobClick}
                      />
                   );
                })}
             </div>
          </div>
+
+         {/* Job popover rendered fixed in viewport close to the anchor rect */}
+         {selected && (
+            <>
+               {/* invisible backdrop to capture clicks and close popover */}
+               <div
+                  className="fixed inset-0 z-40"
+                  onMouseDown={() => setSelected(null)}
+                  aria-hidden
+               />
+               <JobPopover
+                  job={selected.job}
+                  anchorRect={selected.anchorRect}
+                  onClose={() => setSelected(null)}
+               />
+            </>
+         )}
       </div>
    );
 };
