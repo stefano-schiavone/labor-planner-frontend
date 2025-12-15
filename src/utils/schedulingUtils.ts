@@ -103,6 +103,5 @@ export function buildMachinesFromSchedule(schedule?: ServerSchedule): Machine[] 
 /* get scheduled jobs for a machine key */
 export function jobsForMachine(all: ScheduledJob[], machine: { machineUuid: string }) {
    const key = normalizeId(machine?.machineUuid);
-   console.log(all[0].startingTimeGrain)
    return all.filter((sj) => normalizeId((sj.assignedMachine ?? (sj as ScheduledJob).assignedMachine)?.machineUuid) === key);
 }

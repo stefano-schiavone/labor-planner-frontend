@@ -33,13 +33,6 @@ interface Job {
    machineType: string;
 }
 
-/** Server shapes for schedules/scheduled jobs (partial) */
-interface ServerSchedule {
-   scheduleUuid: string;
-   weekStartDate: string; // ISO
-   lastModifiedDate?: string;
-}
-
 interface ServerScheduledJob {
    scheduledJobUuid: string;
    startTime?: string;
@@ -192,7 +185,7 @@ const SchedulingJobs: React.FC = () => {
          setCandidateJobs([]);
          setRawJobs([]);
 
-         const weekId = selectedWeekStart;
+         // const weekId = selectedWeekStart;
 
          if (weekStartISO && weekEndISO) {
             const jobsRes = await fetch(
