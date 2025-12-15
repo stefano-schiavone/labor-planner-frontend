@@ -55,7 +55,15 @@ export function normalizeId(id?: unknown): string {
 }
 
 /* Layout constants */
-export const PIXELS_PER_MINUTE = 0.6; // tweak to zoom
+// Default zoom (pixels per minute)
+export const DEFAULT_PIXELS_PER_MINUTE = 1;
+// Minimum & maximum allowed zoom levels (change these to adjust limits)
+export const MIN_PIXELS_PER_MINUTE = 1.0;
+export const MAX_PIXELS_PER_MINUTE = 3.0;
+
+// Backwards-compatible export (keeps previous code working if they import PIXELS_PER_MINUTE)
+export const PIXELS_PER_MINUTE = DEFAULT_PIXELS_PER_MINUTE;
+
 export const LEFT_COL_WIDTH = 200;
 export const ROW_HEIGHT = 64;
 

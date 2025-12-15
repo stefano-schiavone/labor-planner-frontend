@@ -2,7 +2,6 @@
 import React from "react";
 import type { Machine, ScheduledJob } from "../../types/scheduling";
 import {
-   PIXELS_PER_MINUTE,
    LEFT_COL_WIDTH,
    ROW_HEIGHT,
    VISIBLE_MINUTES_PER_DAY,
@@ -19,13 +18,14 @@ type Props = {
    dayIndexMap: Record<string, number>;
    trackWidth: number;
    grainLengthMinutes: number;
+   pixelsPerMinute: number;
 };
 
 /*
   MachineRow now renders its left column as sticky left:0 so the left column remains visible
   while the track scrolls horizontally inside the shared scroll container.
 */
-const MachineRow: React.FC<Props> = ({ machine, machineJobs, days, dayIndexMap, trackWidth, grainLengthMinutes }) => {
+const MachineRow: React.FC<Props> = ({ machine, machineJobs, days, dayIndexMap, trackWidth, grainLengthMinutes, pixelsPerMinute }) => {
    const machineId = (machine?.machineUuid ?? "unassigned").toLowerCase();
 
    return (
@@ -48,12 +48,12 @@ const MachineRow: React.FC<Props> = ({ machine, machineJobs, days, dayIndexMap, 
          <div className="relative" style={{ height: ROW_HEIGHT, flex: `0 0 ${trackWidth}px` }}>
             <div className="absolute inset-0 flex">
                {days.map((_, i) => (
-                  <div key={i} style={{ width: VISIBLE_MINUTES_PER_DAY * PIXELS_PER_MINUTE }} className={i % 2 === 0 ? "bg-white" : "bg-slate-50"} />
+                  <div key={i} style={{ width: VISIBLE_MINUTES_PER_DAY * pixelsPerMinute }} className={i % 2 === 0 ? "bg-white" : "bg-slate-50"} />
                ))}
             </div>
 
             {Array.from({ length: days.length + 1 }).map((_, i) => {
-               const left = i * VISIBLE_MINUTES_PER_DAY * PIXELS_PER_MINUTE;
+               const left = i * VISIBLE_MINUTES_PER_DAY * pixelsPerMinute;
                return <div key={i} className="absolute top-0 bottom-0 w-px bg-slate-200" style={{ left }} />;
             })}
 
@@ -81,12 +81,12 @@ const MachineRow: React.FC<Props> = ({ machine, machineJobs, days, dayIndexMap, 
                // left is relative to day block (which starts at business-window start)
                const dayBase = clampedDayIndex * VISIBLE_MINUTES_PER_DAY;
                const leftWithinVisible = visibleStartRel;
-               const left = (dayBase + leftWithinVisible) * PIXELS_PER_MINUTE;
+               const left = (dayBase + leftWithinVisible) * pixelsPerMinute;
 
                const visibleDuration = visibleEndRel - visibleStartRel;
-               const width = Math.max(10, visibleDuration * PIXELS_PER_MINUTE);
+               const width = Math.max(10, visibleDuration * pixelsPerMinute);
 
-               const maxWidth = Math.max(0, (days.length * VISIBLE_MINUTES_PER_DAY * PIXELS_PER_MINUTE) - left);
+               const maxWidth = Math.max(0, (days.length * VISIBLE_MINUTES_PER_DAY * pixelsPerMinute) - left);
                const finalWidth = Math.min(width, maxWidth);
 
                // convert displayed time back to clock minutes by adding BUSINESS_START_MINUTES
