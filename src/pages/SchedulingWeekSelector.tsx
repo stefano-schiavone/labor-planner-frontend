@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../utils/api";
 
 /**
  * SchedulingWeekSelector
@@ -106,7 +107,7 @@ const SchedulingWeekSelector: React.FC = () => {
 
       setLoading(true);
       try {
-         const res = await fetch("/api/schedules/for-week", {
+         const res = await apiFetch("/api/schedules/for-week", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ weekStart: weekStartISO, weekEnd: weekEndISO }),

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ButtonGroup from "../components/Machine/ButtonGroup";
 import DataTable from "../components/Machine/DataTable";
 import AddJobModal from "../components/Job/AddJobModal";
+import { apiFetch } from "../utils/api";
 
 interface MachineTypeOption {
    uuid: string;
@@ -134,7 +135,7 @@ const SchedulingJobs: React.FC = () => {
    const [machineTypes, setMachineTypes] = useState<MachineTypeOption[]>([]);
 
    const fetchMachineTypes = useCallback(() => {
-      return fetch("/api/machine-types")
+      return apiFetch("/api/machine-types")
          .then((res) => {
             if (!res.ok) throw new Error(`Failed to fetch machine types: ${res.status}`);
             return res.json();
@@ -153,7 +154,7 @@ const SchedulingJobs: React.FC = () => {
 
    const fetchWeekJobs = useCallback(() => {
       setLoading(true);
-      return fetch("/api/jobs")
+      return apiFetch("/api/jobs")
          .then((res) => {
             if (!res.ok) throw new Error(`Failed to fetch jobs: ${res.status}`);
             return res.json();
@@ -188,7 +189,7 @@ const SchedulingJobs: React.FC = () => {
          // const weekId = selectedWeekStart;
 
          if (weekStartISO && weekEndISO) {
-            const jobsRes = await fetch(
+            const jobsRes = await apiFetch(
                `/api/jobs/by-deadline?start=${encodeURIComponent(weekStartISO)}&end=${encodeURIComponent(weekEndISO)}`
             );
             if (jobsRes.ok) {
@@ -271,7 +272,7 @@ const SchedulingJobs: React.FC = () => {
             requiredMachineTypeUuid: payload.requiredMachineTypeUuid ?? payload.machineTypeUuid,
          };
 
-         return fetch("/api/jobs", {
+         return apiFetch("/api/jobs", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),
@@ -299,7 +300,7 @@ const SchedulingJobs: React.FC = () => {
 
       return Promise.all(
          uuids.map((uuid) =>
-            fetch(`/api/jobs/${encodeURIComponent(uuid)}`, {
+            apiFetch(`/api/jobs/${encodeURIComponent(uuid)}`, {
                method: "DELETE",
             }).then((res) => {
                if (!res.ok) throw new Error(`Delete failed for ${uuid}: ${res.status}`);
@@ -319,7 +320,7 @@ const SchedulingJobs: React.FC = () => {
    const handleGoToSchedule = async () => {
       if (!weekStartISO || !weekEndISO) return alert("Invalid week");
       try {
-         const res = await fetch("/api/schedules/for-week", {
+         const res = await apiFetch("/api/schedules/for-week", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ weekStart: weekStartISO, weekEnd: weekEndISO }),
@@ -416,7 +417,7 @@ const SchedulingJobs: React.FC = () => {
                            setGenerating(true);
 
                            try {
-                              const res = await fetch("/api/schedules/solve-for-week", {
+                              const res = await apiFetch("/api/schedules/solve-for-week", {
                                  method: "POST",
                                  headers: { "Content-Type": "application/json" },
                                  body: JSON.stringify({ weekStart: weekStartISO, weekEnd: weekEndISO }),

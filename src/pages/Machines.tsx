@@ -3,6 +3,7 @@ import ButtonGroup from "../components/Machine/ButtonGroup";
 import DataTable from "../components/Machine/DataTable";
 import AddMachineModal from "../components/Machine/AddMachineModal";
 import AddMachineTypeModal from "../components/Machine/AddMachineTypeModal";
+import { apiFetch } from "../utils/api";
 
 interface Machine {
    uuid: string;
@@ -57,7 +58,7 @@ const Machines: React.FC = () => {
    const [rawMachines, setRawMachines] = useState<ServerMachine[]>([]);
 
    const fetchStatusOptions = useCallback(() => {
-      return fetch("/api/machine-statuses")
+      return apiFetch("/api/machine-statuses")
          .then((res) => {
             if (!res.ok) throw new Error(`Failed to fetch machine statuses: ${res.status}`);
             return res.json();
@@ -76,7 +77,7 @@ const Machines: React.FC = () => {
 
    // Fetch all machine types from the API
    const fetchMachineTypes = useCallback(() => {
-      return fetch("/api/machine-types")
+      return apiFetch("/api/machine-types")
          .then((res) => {
             if (!res.ok) throw new Error(`Failed to fetch machine types: ${res.status}`);
             return res.json();
@@ -96,7 +97,7 @@ const Machines: React.FC = () => {
 
    const fetchMachines = useCallback(() => {
       setLoading(true);
-      return fetch("/api/machines")
+      return apiFetch("/api/machines")
          .then((res) => res.json())
          .then(setRawMachines) // just store raw data
          .finally(() => setLoading(false));
@@ -155,7 +156,7 @@ const Machines: React.FC = () => {
    // Create a new machine type
    const handleCreateType = useCallback(
       (name: string) => {
-         return fetch("/api/machine-types", {
+         return apiFetch("/api/machine-types", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name }),
@@ -184,7 +185,7 @@ const Machines: React.FC = () => {
             machineStatusUuid: payload.statusOptionUuid,
          };
 
-         return fetch("/api/machines", {
+         return apiFetch("/api/machines", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),
@@ -215,7 +216,7 @@ const Machines: React.FC = () => {
 
       return Promise.all(
          uuids.map((uuid) =>
-            fetch(`/api/machines/${encodeURIComponent(uuid)}`, {
+            apiFetch(`/api/machines/${encodeURIComponent(uuid)}`, {
                method: "DELETE",
             }).then((res) => {
                if (!res.ok) throw new Error(`Delete failed for ${uuid}: ${res.status}`);
@@ -245,7 +246,7 @@ const Machines: React.FC = () => {
 
       return Promise.all(
          uuids.map((uuid) =>
-            fetch(`/api/machine-types/${encodeURIComponent(uuid)}`, {
+            apiFetch(`/api/machine-types/${encodeURIComponent(uuid)}`, {
                method: "DELETE",
             }).then((res) => {
                if (!res.ok) throw new Error(`Delete failed for type ${uuid}: ${res.status}`);

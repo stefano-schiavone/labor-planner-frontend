@@ -7,6 +7,7 @@ import {
    VISIBLE_MINUTES_PER_DAY,
    BUSINESS_START_MINUTES,
 } from "../utils/schedulingUtils";
+import { apiFetch } from "../utils/api";
 
 const StatCard: React.FC<{ title: string; value: React.ReactNode; hint?: string }> = ({ title, value, hint }) => (
    <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
@@ -68,7 +69,7 @@ const SchedulingView: React.FC = () => {
    useEffect(() => {
       if (!weekStartISO || !weekEndISO) return;
 
-      fetch(
+      apiFetch(
          `/api/jobs/by-deadline?start=${encodeURIComponent(weekStartISO)}&end=${encodeURIComponent(weekEndISO)}`
       )
          .then(res => (res.ok ? res.json() : []))
