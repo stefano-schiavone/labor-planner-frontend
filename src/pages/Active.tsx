@@ -4,6 +4,7 @@ import type { ServerSchedule } from "../types/scheduling";
 import Timeline from "../components/Scheduling/Timeline";
 import "../styles/Active.css";
 import "../index.css";
+import { apiFetch } from "../utils/api";
 
 /**
  * Utilities: ISO week number + week range (Monday..next Monday) calculation.
@@ -72,7 +73,7 @@ const Active: React.FC = () => {
          setError(null);
          setSchedule(null);
          try {
-            const resp = await fetch("/api/schedules/for-week", {
+            const resp = await apiFetch("/api/schedules/for-week", {
                method: "POST",
                headers: { "Content-Type": "application/json" },
                body: JSON.stringify({ weekStart: weekStartISO, weekEnd: weekEndISO }),
@@ -169,14 +170,20 @@ const Active: React.FC = () => {
                            setGenerating(true)
                            // attempt to generate a schedule and navigate to result if success
                            try {
-                              const res = await fetch("/api/schedules/solve-for-week", {
+                              const res = await apiFetch("/api/schedules/solve-for-week", {
                                  method: "POST",
                                  headers: { "Content-Type": "application/json" },
                                  body: JSON.stringify({ weekStart: weekStartISO, weekEnd: weekEndISO }),
                               });
                               if (!res.ok) {
                                  const txt = await res.text().catch(() => "");
-                                 throw new Error(txt || `Failed (${res.status})`);
+                                 if (txt.includes("No jobs found for selected week")) {
+                                    window.alert("No jobs for this week");
+                                    setGenerating(false)
+                                 } else {
+                                    throw new Error(txt || `Failed (${res.status})`);
+                                 }
+                                 return;
                               }
                               const data = await res.json();
                               if (data.exists) {
