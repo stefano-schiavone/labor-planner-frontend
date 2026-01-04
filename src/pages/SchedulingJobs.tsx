@@ -302,8 +302,59 @@ const SchedulingJobs: React.FC = () => {
          uuids.map((uuid) =>
             apiFetch(`/api/jobs/${encodeURIComponent(uuid)}`, {
                method: "DELETE",
-            }).then((res) => {
-               if (!res.ok) throw new Error(`Delete failed for ${uuid}: ${res.status}`);
+            }).then(async (res) => {
+               // Check for conflict (409) or bad request (400) that might indicate a constraint issue
+               if (res.status === 409 || res.status === 400) {
+                  let data;
+                  try {
+                     data = await res.json();
+                  } catch (e) {
+                     // If we can't parse JSON, it's a different error
+                     if (res.status === 400) {
+                        throw new Error(`Delete failed for ${uuid}: ${res.status}`);
+                     }
+                     throw new Error(`Conflict deleting ${uuid} but couldn't parse response`);
+                  }
+
+                  // Check if this is a scheduled job conflict
+                  if (data.type === "SCHEDULED_JOB_CONFLICT") {
+                     const shouldDeleteSchedule = window.confirm(
+                        `This job is part of an existing schedule.\n\nWould you like to delete the schedule first?`
+                     );
+
+                     if (shouldDeleteSchedule) {
+                        if (!data.scheduleUuid) {
+                           throw new Error("Cannot delete schedule:  Schedule ID not provided");
+                        }
+
+                        // Delete the schedule
+                        const scheduleRes = await apiFetch(`/api/schedules/${encodeURIComponent(data.scheduleUuid)}`, {
+                           method: "DELETE",
+                        });
+
+                        if (!scheduleRes.ok) {
+                           throw new Error(`Failed to delete schedule: ${scheduleRes.status}`);
+                        }
+
+                        // Now try deleting the job again
+                        const jobRes = await apiFetch(`/api/jobs/${encodeURIComponent(uuid)}`, {
+                           method: "DELETE",
+                        });
+
+                        if (!jobRes.ok) {
+                           throw new Error(`Delete failed for job ${uuid} after schedule deletion:  ${jobRes.status}`);
+                        }
+
+                     } else {
+                        throw new Error("Job deletion cancelled - job is part of a schedule");
+                     }
+                  } else {
+                     // Different type of error
+                     throw new Error(`Delete failed for ${uuid}: ${data.message || res.status}`);
+                  }
+               } else if (!res.ok) {
+                  throw new Error(`Delete failed for ${uuid}: ${res.status}`);
+               }
             })
          )
       )
@@ -313,7 +364,9 @@ const SchedulingJobs: React.FC = () => {
          })
          .catch((err) => {
             console.error(err);
-            window.alert("Failed to delete jobs.");
+            if (!err.message.includes("cancelled")) {
+               window.alert(`Failed to delete jobs: ${err.message}`);
+            }
          });
    }, [selected, loadForWeek, clearSelection]);
 
