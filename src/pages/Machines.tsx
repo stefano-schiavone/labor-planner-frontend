@@ -371,6 +371,41 @@ const Machines: React.FC = () => {
       [machines, selected, toggleSelect]
    );
 
+   const allMachinesSelected = useMemo(() => {
+      if (machines.length === 0) return false;
+      return machines.every((m) => selected[m.uuid]);
+   }, [machines, selected]);
+
+   const handleSelectAllMachines = useCallback(() => {
+      if (allMachinesSelected) {
+         setSelected({});
+      } else {
+         const newSelected: Record<string, boolean> = {};
+         machines.forEach((m) => {
+            newSelected[m.uuid] = true;
+         });
+         setSelected(newSelected);
+      }
+   }, [machines, allMachinesSelected]);
+
+   // For machine types (only selectable ones with UUIDs)
+   const allTypesSelected = useMemo(() => {
+      if (machineTypes.length === 0) return false;
+      return machineTypes.every((t) => selectedTypes[t.uuid]);
+   }, [machineTypes, selectedTypes]);
+
+   const handleSelectAllTypes = useCallback(() => {
+      if (allTypesSelected) {
+         setSelectedTypes({});
+      } else {
+         const newSelected: Record<string, boolean> = {};
+         machineTypes.forEach((t) => {
+            newSelected[t.uuid] = true;
+         });
+         setSelectedTypes(newSelected);
+      }
+   }, [machineTypes, allTypesSelected]);
+
    const typeDeleteEnabled = useMemo(() => Object.values(selectedTypes).some(Boolean), [selectedTypes]);
    const machineDeleteEnabled = useMemo(() => Object.values(selected).some(Boolean), [selected]);
 
@@ -385,11 +420,13 @@ const Machines: React.FC = () => {
                         onAdd={handleShowAddType}
                         onDelete={handleDeleteTypes}
                         onSort={handleSort}
+                        onSelectAll={handleSelectAllTypes}
                         addEnabled={true}
                         deleteEnabled={typeDeleteEnabled}
                         sortEnabled={machineTypes.length > 0}
-                     />
-                  </div>
+                        selectAllEnabled={machineTypes.length > 0}
+                        allSelected={allTypesSelected}
+                     />                  </div>
                </div>
             </div>
 
@@ -409,9 +446,12 @@ const Machines: React.FC = () => {
                            onAdd={handleShowAddMachine}
                            onDelete={handleDeleteMachines}
                            onSort={handleSort}
+                           onSelectAll={handleSelectAllMachines}
                            addEnabled={machineTypes.length > 0}
                            deleteEnabled={machineDeleteEnabled}
                            sortEnabled={machines.length > 0}
+                           selectAllEnabled={machines.length > 0}
+                           allSelected={allMachinesSelected}
                         />
                      </div>
                   </div>
