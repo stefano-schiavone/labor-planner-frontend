@@ -1,14 +1,28 @@
+import React from "react";
+
 interface ButtonGroupProps {
    onAdd: () => void;
    onDelete: () => void;
    onSort: () => void;
+   onSelectAll?: () => void;
    addEnabled: boolean;
    deleteEnabled: boolean;
    sortEnabled: boolean;
+   selectAllEnabled?: boolean;
+   allSelected?: boolean; // To toggle between "Select All" and "Deselect All"
 }
 
-const ButtonGroup: React.FC<ButtonGroupProps> = ({ onAdd, onDelete, onSort, addEnabled, deleteEnabled, sortEnabled }) => {
-
+const ButtonGroup: React.FC<ButtonGroupProps> = ({
+   onAdd,
+   onDelete,
+   onSort,
+   onSelectAll,
+   addEnabled,
+   deleteEnabled,
+   sortEnabled,
+   selectAllEnabled = false,
+   allSelected = false,
+}) => {
    return (
       <div
          role="toolbar"
@@ -23,6 +37,30 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({ onAdd, onDelete, onSort, addE
         w-auto
       "
       >
+         {/* Select All / Deselect All */}
+         {onSelectAll && (
+            <button
+               onClick={onSelectAll}
+               className={`inline-flex items-center justify-center
+                  px-3 py-1.5
+                  text-sm font-medium
+                  rounded-lg
+                  text-slate-600
+                  bg-slate-50
+                  border border-slate-200
+                  hover: bg-slate-100
+                  focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-slate-300
+                  transition-colors duration-150
+                  ${!selectAllEnabled ? "opacity-50 cursor-not-allowed" : ""}
+               `}
+               aria-label={allSelected ? "Deselect All" : "Select All"}
+               title={allSelected ? "Deselect All" : "Select All"}
+               disabled={!selectAllEnabled}
+            >
+               {allSelected ? "Deselect All" : "Select All"}
+            </button>
+         )}
+
          {/* Add */}
          <button
             onClick={onAdd}
@@ -33,8 +71,8 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({ onAdd, onDelete, onSort, addE
                text-[#2563EB]
                bg-[rgba(37,99,235,0.06)]
                border border-[rgba(37,99,235,0.12)]
-               hover:bg-[rgba(37,99,235,0.10)]
-               focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[rgba(96,165,250,0.25)]
+               hover: bg-[rgba(37,99,235,0.10)]
+               focus: outline-none focus: ring-2 focus:ring-offset-1 focus:ring-[rgba(96,165,250,0.25)]
                transition-colors duration-150
                ${!addEnabled ? "opacity-50 cursor-not-allowed" : ""}
             `}
@@ -60,7 +98,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({ onAdd, onDelete, onSort, addE
                focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-red-300
                transition-colors duration-150
                ${!deleteEnabled ? "opacity-50 cursor-not-allowed" : ""}
-            ` }
+            `}
             aria-label="Delete"
             title="Delete"
             disabled={!deleteEnabled}
@@ -80,7 +118,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({ onAdd, onDelete, onSort, addE
                bg-[#2563EB]
                hover:bg-[#1F4FD6]
                active:bg-[#173fb3]
-               focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#60A5FA]
+               focus:outline-none focus:ring-2 focus:ring-offset-1 focus: ring-[#60A5FA]
                transition-colors duration-150
                ${!sortEnabled ? "opacity-50 cursor-not-allowed" : ""}
             `}

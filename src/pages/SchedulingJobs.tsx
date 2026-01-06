@@ -370,6 +370,28 @@ const SchedulingJobs: React.FC = () => {
          });
    }, [selected, loadForWeek, clearSelection]);
 
+   const allJobsSelected = useMemo(() => {
+      if (jobs.length === 0) return false;
+      return jobs.every((j) => selected[j.uuid]);
+   }, [jobs, selected]);
+
+   const selectAllEnabled = jobs.length > 0;
+
+   // Add this handler
+   const handleSelectAllJobs = useCallback(() => {
+      if (allJobsSelected) {
+         // Deselect all
+         setSelected({});
+      } else {
+         // Select all
+         const newSelected: Record<string, boolean> = {};
+         jobs.forEach((j) => {
+            newSelected[j.uuid] = true;
+         });
+         setSelected(newSelected);
+      }
+   }, [jobs, allJobsSelected]);
+
    const handleGoToSchedule = async () => {
       if (!weekStartISO || !weekEndISO) return alert("Invalid week");
       try {
@@ -550,9 +572,12 @@ const SchedulingJobs: React.FC = () => {
                            onAdd={handleShowAddJob}
                            onDelete={handleDeleteJobs}
                            onSort={handleSort}
+                           onSelectAll={handleSelectAllJobs}
                            addEnabled={machineTypes.length > 0}
                            deleteEnabled={deleteEnabled}
                            sortEnabled={jobs.length > 0}
+                           selectAllEnabled={selectAllEnabled}
+                           allSelected={allJobsSelected}
                         />
                      </div>
                   </div>
