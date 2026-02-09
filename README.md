@@ -1,82 +1,129 @@
-# REMEMBER
-# TO
-# PUT
-# tsc --noEmit
-# IN
-# CI
-## Because I am using SWC, quick for development but doesn't check types, so to not get errors in production include it
+# Labor Planner – Frontend
 
+Frontend application for the **Labor Planner** system, built with a focus on **modern React practices, type safety, and clean UI architecture**.
 
-# React + TypeScript + Vite
+This project demonstrates my experience with **React, TypeScript, component-driven design, API integration, and modern frontend tooling**.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Repository Origin
 
-Currently, two official plugins are available:
+> ℹ️ This repository was originally developed within a university environment and later
+> **imported from the university's private GitLab instance**.
+> It is published here on GitHub for **portfolio and demonstration purposes**, allowing recruiters to review the technologies, structure, and frontend practices used.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
 
-## React Compiler
+**Core**
+- React
+- TypeScript
+- Vite
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+**UI & Styling**
+- Material UI (MUI)
+- Emotion (CSS-in-JS)
+- Responsive layout design
 
-## Expanding the ESLint configuration
+**State & Data**
+- React hooks
+- API-based state management
+- Typed DTO consumption from backend
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**Tooling & Quality**
+- ESLint
+- TypeScript strict mode
+- Modular component structure
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**Build & Dev**
+- Vite dev server
+- Production-optimized builds
+- Environment-based configuration
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## What This Frontend Does
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+The frontend is responsible for:
+- Providing a clean and intuitive UI for the Labor Planner system
+- Authenticating users and handling JWT-based sessions
+- Managing jobs, machines, and schedules via backend APIs
+- Visualizing planning and scheduling data
+- Validating user input before submission
+- Communicating with the backend REST API in a type-safe way
+
+## Project Structure
+
+The project follows a **component-based structure** with clear separation of concerns.
+
+```text
+src/
+├── api/            # API clients & backend integration
+├── components/     # Reusable UI components
+├── pages/          # Page-level components
+├── hooks/          # Custom React hooks
+├── types/          # Shared TypeScript types & interfaces
+├── utils/          # Utility functions
+├── theme/          # MUI theme configuration
+├── App.tsx         # Root application component
+└── main.tsx        # Application entry point
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Note: Build output (`dist`) and dependencies (`node_modules`) are excluded from version control.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Key Architectural Decisions
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **TypeScript-first development** for safety and maintainability
+- **Component-driven UI design** using reusable components
+- **Material UI** for consistent styling and accessibility
+- **Separation of API logic** from UI components
+- **Vite** for fast development and optimized production builds
+- **Environment variables** for backend URL configuration
+
+## Backend Integration
+
+This frontend consumes the REST API provided by:
+[labor-planner-backend](https://github.com/stefano-schiavone/labor-planner-backend)
+
+Key integration points:
+- JWT authentication
+- Job and machine management
+- Schedule generation and visualization
+- Constraint-aware scheduling results
+
+## Configuration
+
+Environment-specific configuration is supported via Vite:
+
 ```
+VITE_API_BASE_URL=http://localhost:8080
+```
+
+This mirrors real-world frontend deployment setups.
+
+## Running the Project
+
+### Prerequisites
+- Node.js (18+ recommended)
+- npm or pnpm
+
+### Install dependencies
+```bash
+npm install
+```
+
+### Run in development
+```bash
+npm run dev
+```
+
+### Build for production
+```bash
+npm run build
+```
+
+## Why This Project Matters
+
+This frontend showcases:
+- Modern React + TypeScript development
+- Real-world API-driven UI design
+- Clean component architecture
+- Integration with a non-trivial backend system
+- Production-aware tooling and configuration
+
+Together with the backend, this project reflects how I build full-stack applications beyond coursework, using industry-relevant technologies and patterns.
